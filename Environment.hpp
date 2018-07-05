@@ -1,3 +1,6 @@
+#ifndef ENVCLASS
+#define ENVCLASS
+
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -12,7 +15,8 @@ class Environment{
     public:
         Environment();
         // read map returns a list of possible states!
-        vector<int> read_map(string filename);
+        void read_map(string filename);
+        vector<int> get_nonterminal();
         pair<int,int> NtoXY(int state);
         int XYtoN(int x, int y);
         char query_state(int state);//int x, int y);
@@ -24,6 +28,8 @@ class Environment{
         int n_lin;
         int n_col;
         vector<int> nonterminal_states;
-        string* map;
+        char** map;
         pair<int,int> current_state;
 };
+
+#endif

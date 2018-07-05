@@ -3,32 +3,37 @@
 using namespace std;
 
 Environment::Environment(){
-//    srand(2); // initialize seed
+    srand(2); // initialize seed
 }
 
-vector<int> Environment::read_map(string filename){
+void Environment::read_map(string filename){
     ifstream f(filename);
     int lin,col;
     f >> lin >> col;
     string line;
     this->n_lin = lin;
     this->n_col = col;
-    this->map = new string[lin];    
-    int n_line = 0;
-    vector<int> nterminal_states;
-    while(getline(f,line)){
-        this->map[n_line] = line;
+    this->map = new char*[lin];    
+    cout << "n_lines: " << lin << " n_cols: " << col << "\n";
+    vector<int> nterminal_states(10);
+    cout << "A\n";
+    for (int n_line=0; n_line<lin; n_line++){
+        getline(f,line);
+        cout << n_line << "\n\n";
+        cout << line << "\n";
+        this->map[n_line] = new char[col];
+        for (int nc=0; nc<col; nc++)    this->map[n_line][nc] = line[nc];
         for (int n_column=0; n_column<col; n_column++){
             if (line[n_column] == '-'){
                 int this_state = XYtoN(n_line,n_column);
-                cout << "state: " << nterminal_states.size() << "\n";
-                nterminal_states.push_back(this_state);
+                this->nonterminal_states.push_back(this_state);
             }
         }
-        n_line++;
     }
-    //this->nonterminal_states = nterminal_states;
-    return nterminal_states;
+}
+
+vector<int> Environment::get_nonterminal(){
+    return this->nonterminal_states;
 }
 
 // x is the number of the line, y is the number of the column
@@ -125,6 +130,7 @@ int Environment::reset(){
 }
 
 Environment::~Environment(){
+    for (int i=0; i<this->n_lin; i++)   delete[] this->map[i];
     delete[] this->map;
 }
 

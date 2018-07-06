@@ -3,7 +3,7 @@
 using namespace std;
 
 Environment::Environment(){
-    srand(2); // initialize seed
+    srand(20); // initialize seed
 }
 
 void Environment::read_map(string filename){
@@ -14,13 +14,10 @@ void Environment::read_map(string filename){
     this->n_lin = lin;
     this->n_col = col;
     this->map = new char*[lin];    
-    cout << "n_lines: " << lin << " n_cols: " << col << "\n";
     vector<int> nterminal_states(10);
-    cout << "A\n";
+    getline(f,line);
     for (int n_line=0; n_line<lin; n_line++){
         getline(f,line);
-        cout << n_line << "\n\n";
-        cout << line << "\n";
         this->map[n_line] = new char[col];
         for (int nc=0; nc<col; nc++)    this->map[n_line][nc] = line[nc];
         for (int n_column=0; n_column<col; n_column++){
@@ -30,6 +27,7 @@ void Environment::read_map(string filename){
             }
         }
     }
+    f.close();
 }
 
 vector<int> Environment::get_nonterminal(){
@@ -47,13 +45,18 @@ pair<int,int> Environment::NtoXY(int state){
    return make_pair(x,y);
 }
 
-char Environment::query_state(int state){//int x, int y){
-    if (state < 0 || state > (this->n_lin*this->n_col - 1))    return '#';
+char Environment::query_state(int state){
+    if (state < 0)  return '#';
+    if (state > (this->n_lin*this->n_col - 1))    return '!';
     pair<int,int> xy = NtoXY(state);
     return this->map[xy.first][xy.second];
 }
 
-// Returns the triple (reward, next state, isTerminal)
+pair<int,int> Environment::get_dimensions(){
+    return {this->n_lin, this->n_col};
+}
+
+// Returns the triple (isTerminal, reward, next state)
 // action maps: 
 //      up: 0
 //      right: 1
@@ -122,9 +125,9 @@ int Environment::get_reward(int state){
 
 // Generates a random state for the agent to start
 int Environment::reset(){
-    int num_of_nonterminal = nonterminal_states.size();
+    int num_of_nonterminal = this->nonterminal_states.size();
     int new_state = rand() % num_of_nonterminal;
-    new_state = nonterminal_states[new_state];
+    new_state = this->nonterminal_states[new_state];
     this->current_state = NtoXY(new_state);
     return new_state;
 }
@@ -133,4 +136,3 @@ Environment::~Environment(){
     for (int i=0; i<this->n_lin; i++)   delete[] this->map[i];
     delete[] this->map;
 }
-

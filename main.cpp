@@ -1,13 +1,20 @@
 #include <iostream>
+#include <string>
 #include <vector>
 
+#include "Agent.hpp"
 #include "Environment.hpp"
 
 using namespace std;
 
-int main(int argc, char* argv[]){
-    Environment env;
-    env.read_map("maps/pacmaze-01-tiny.txt");
-    //for (int i=0; i<(7*14-1); i++)  cout << env.query_state(i);
+int main(int argc, char* argv[]){    
+    string map = argv[1];
+    double alpha = atof(argv[2]);
+    double gamma = atof(argv[3]);
+    double epsilon = .001;
+    int N = atoi(argv[4]);
+    Agent a(map, gamma, alpha, epsilon);
+    a.train(N);
+    a.print_results();
     return 0;
 }

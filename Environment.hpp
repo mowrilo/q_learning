@@ -19,10 +19,11 @@ class Environment{
         vector<int> get_nonterminal();
         pair<int,int> NtoXY(int state);
         int XYtoN(int x, int y);
-        char query_state(int state);//int x, int y);
+        char query_state(int state);
         pair<int,pair<int,int> > take_action(int act);
         int reset();
         int get_reward(int state);
+        pair<int,int> get_dimensions();
         ~Environment();
     private:
         int n_lin;
